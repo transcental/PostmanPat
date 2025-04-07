@@ -1,12 +1,12 @@
 {
     "display_information": {
-        "name": "My Slack App",
+        "name": "Postman Pat",
         "description": "Slack app that does cool things!",
         "background_color": "#d45443"
     },
     "features": {
         "bot_user": {
-            "display_name": "Amber's App",
+            "display_name": "Postman Pat",
             "always_online": false
         }
     },

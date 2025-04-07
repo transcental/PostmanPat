@@ -7,8 +7,8 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv
 from starlette.applications import Starlette
 
-from app.utils.env import env
-from app.utils.logging import send_heartbeat
+from postmanpat.utils.env import env
+from postmanpat.utils.logging import send_heartbeat
 
 load_dotenv()
 
@@ -32,7 +32,7 @@ async def main(_app: Starlette):
 
 def start():
     uvicorn.run(
-        "app.utils.starlette:app",
+        "postmanpat.utils.starlette:app",
         host="0.0.0.0",
         port=env.port,
         log_level="info" if env.environment != "production" else "warning",

@@ -1,11 +1,13 @@
 [project]
-name = "slacktemplate"
+name = "postmanpat"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "aiohttp>=3.11.14",
+    "pyairtable>=3.0.2",
+    "pydantic[email]>=2.11.1",
     "python-dotenv>=1.1.0",
     "slack-bolt>=1.23.0",
     "starlette>=0.46.1",
@@ -14,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-app = "app.__main__:start"
+postmanpat = "postmanpat.__main__:start"
 
 [build-system]
 requires = ["hatchling"]

@@ -1,4 +1,4 @@
-from app.utils.env import env
+from postmanpat.utils.env import env
 
 
 async def send_heartbeat(heartbeat: str, messages: list[str] = []):

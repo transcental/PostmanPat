@@ -4,9 +4,9 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 
-from app.__main__ import main
-from app.utils.env import env
-from app.utils.slack import app as slack_app
+from postmanpat.__main__ import main
+from postmanpat.utils.env import env
+from postmanpat.utils.slack import app as slack_app
 
 req_handler = AsyncSlackRequestHandler(slack_app)
 

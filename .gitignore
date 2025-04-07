@@ -12,3 +12,5 @@ wheels/
 # macOS-generated files
 .DS_Store
 
+# Environment variables
+.env

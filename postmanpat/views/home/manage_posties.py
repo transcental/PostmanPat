@@ -31,7 +31,8 @@ async def get_manage_posties_view(postie: Postie):
             "text": {"type": "plain_text", "text": "Managers", "emoji": True},
         },
     ]
-    blocks.extend(*manager_blocks)
+    for block in manager_blocks:
+        blocks.extend(block)
 
     if postie.is_superadmin:
         blocks.append(
@@ -62,7 +63,8 @@ async def get_manage_posties_view(postie: Postie):
         ]
     )
 
-    blocks.extend(*postie_blocks)
+    for block in postie_blocks:
+        blocks.extend(block)
 
     if postie.is_manager:
         blocks.append(

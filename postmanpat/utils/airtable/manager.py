@@ -1,3 +1,5 @@
+import logging
+
 from pyairtable import Api
 
 from postmanpat.utils.airtable.types import Postie
@@ -74,9 +76,11 @@ class AirtableManager:
     def get_requests_by_postie_id(
         self, postie_id: str, fields: list | None = None
     ) -> list[ShippingRequest]:
+        logging.info(f"Finding requests for {postie_id}")
         requests = self.requests_table.all(
             formula=f"{{postie}} = '{postie_id}'", fields=fields
         )
+
         if requests:
             requests = [ShippingRequest.parse_obj(req) for req in requests]
         else:

@@ -18,12 +18,12 @@ def get_manager_view(postie: Postie):
     formatted_msg = f"""
     *Requests*
     {len(reqs)} requests found
-    {len(organised_reqs.get(ShippingReqStatus.pending.value, []))} pending
-    {len(organised_reqs.get(ShippingReqStatus.assigned.value, []))} assigned
-    {len(organised_reqs.get(ShippingReqStatus.dispatched.value, []))} dispatched
-    {len(organised_reqs.get(ShippingReqStatus.mailed.value, []))} mailed
-    {len(organised_reqs.get(ShippingReqStatus.arrived.value, []))} arrived
-    {len(organised_reqs.get(ShippingReqStatus.errored.value, []))} errored
+    {len(organised_reqs.get(ShippingReqStatus.pending, []))} pending
+    {len(organised_reqs.get(ShippingReqStatus.assigned, []))} assigned
+    {len(organised_reqs.get(ShippingReqStatus.dispatched, []))} dispatched
+    {len(organised_reqs.get(ShippingReqStatus.mailed, []))} mailed
+    {len(organised_reqs.get(ShippingReqStatus.arrived, []))} arrived
+    {len(organised_reqs.get(ShippingReqStatus.errored, []))} errored
     """
 
     btns = get_buttons(postie, "dashboard")

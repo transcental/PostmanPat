@@ -1,4 +1,6 @@
-def get_error_view(msg: str):
+def get_error_view(msg: str, traceback: str | None = None):
+    if traceback:
+        msg = f"{msg}\n\nTraceback:\n```{traceback}```"
     return {
         "type": "home",
         "blocks": [
@@ -11,7 +13,7 @@ def get_error_view(msg: str):
             },
             {
                 "type": "section",
-                "text": {"type": "mrkdwn", "text": f"Error message: {msg}"},
+                "text": {"type": "mrkdwn", "text": f"Error message\n{msg}"},
             },
         ],
     }

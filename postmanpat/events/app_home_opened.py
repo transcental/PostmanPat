@@ -1,4 +1,6 @@
 import logging
+import sys
+import traceback
 from typing import Any
 
 from slack_sdk.web.async_client import AsyncWebClient
@@ -18,31 +20,48 @@ async def on_app_home_opened(event: dict[str, Any], client: AsyncWebClient):
 
 
 async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
-    await client.views_publish(view=get_loading_view(), user_id=user_id)
+    try:
+        await client.views_publish(view=get_loading_view(), user_id=user_id)
 
-    user = env.airtable_client.get_postie_by_slack_id(user_id)
+        user = env.airtable_client.get_postie_by_slack_id(user_id)
 
-    if not user:
-        user_info = await client.users_info(user=user_id) or {}
-        name = (
-            user_info.get("user", {}).get("profile", {}).get("display_name")
-            or user_info.get("user", {}).get("profile", {}).get("real_name")
-            or "person"
+        if not user:
+            user_info = await client.users_info(user=user_id) or {}
+            name = (
+                user_info.get("user", {}).get("profile", {}).get("display_name")
+                or user_info.get("user", {}).get("profile", {}).get("real_name")
+                or "person"
+            )
+            view = get_unknown_user_view(name)
+        else:
+            logging.info(f"Opening {type} for {user_id}")
+            match type:
+                case "default" | "dashboard":
+                    if user.is_manager:
+                        view = get_manager_view(user)
+                    else:
+                        view = get_postie_view(user)
+                case "manage-posties":
+                    view = await get_manage_posties_view(user)
+                case _:
+                    view = get_error_view(
+                        f"This shouldn't happen, please tell amber that app home case _ was hit with type {type}"
+                    )
+    except Exception as e:
+        logging.error(f"Error opening app home: {e}")
+        ex_type, ex_value, ex_traceback = sys.exc_info()
+        # Extract unformatter stack traces as tuples
+        trace_back = traceback.extract_tb(ex_traceback)
+
+        # Format stacktrace
+        stack_trace = ""
+
+        for trace in trace_back:
+            stack_trace += f"File: {trace[0]}\nLine: {trace[1]}\nFunction: {trace[2]}\nMessage: {trace[3]}\n"
+
+        view = get_error_view(
+            f"An error occurred while opening the app home: {ex_type.__name__}: {ex_value}",
+            traceback=stack_trace.strip(),
         )
-        view = get_unknown_user_view(name)
-    else:
-        logging.info(f"Opening {type} for {user_id}")
-        match type:
-            case "default" | "dashboard":
-                if user.is_manager:
-                    view = get_manager_view(user)
-                else:
-                    view = get_postie_view(user)
-            case "manage-posties":
-                view = await get_manage_posties_view(user)
-            case _:
-                view = get_error_view(
-                    f"This shouldn't happen, please tell amber that app home case _ was hit with type {type}"
-                )
 
     await client.views_publish(user_id=user_id, view=view)

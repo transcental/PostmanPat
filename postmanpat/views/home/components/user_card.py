@@ -88,31 +88,31 @@ async def get_user_card(postie: Postie, viewer: Postie):
             }
         )
 
-        if viewer.is_manager and not postie.is_manager:
-            # Managers can kick regular posties
-            options.append(
-                {
-                    "text": {
-                        "type": "plain_text",
-                        "text": f"Remove {name}",
-                        "emoji": True,
-                    },
-                    "value": f"admin-kick-{postie.id}",
-                }
-            )
+    if viewer.is_manager and not postie.is_manager:
+        # Managers can kick regular posties
+        options.append(
+            {
+                "text": {
+                    "type": "plain_text",
+                    "text": f"Remove {name}",
+                    "emoji": True,
+                },
+                "value": f"admin-kick-{postie.id}",
+            }
+        )
 
-        if viewer.is_superadmin and postie.is_regular_manager:
-            # Superadmins can kick regular managers
-            options.append(
-                {
-                    "text": {
-                        "type": "plain_text",
-                        "text": f":zap: Remove {name}",
-                        "emoji": True,
-                    },
-                    "value": f"superadmin-kick-{postie.id}",
-                }
-            )
+    if viewer.is_superadmin and postie.is_regular_manager:
+        # Superadmins can kick regular managers
+        options.append(
+            {
+                "text": {
+                    "type": "plain_text",
+                    "text": f":zap: Remove {name}",
+                    "emoji": True,
+                },
+                "value": f"superadmin-kick-{postie.id}",
+            }
+        )
 
     blocks = [
         {

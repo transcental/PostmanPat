@@ -5,6 +5,7 @@ from slack_sdk.web.async_client import AsyncWebClient
 
 from postmanpat.utils.env import env
 from postmanpat.views.home.error import get_error_view
+from postmanpat.views.home.loading import get_loading_view
 from postmanpat.views.home.manage_posties import get_manage_posties_view
 from postmanpat.views.home.manager import get_manager_view
 from postmanpat.views.home.postie import get_postie_view
@@ -17,6 +18,8 @@ async def on_app_home_opened(event: dict[str, Any], client: AsyncWebClient):
 
 
 async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
+    await client.views_publish(view=get_loading_view(), user_id=user_id)
+
     user = env.airtable_client.get_postie_by_slack_id(user_id)
 
     if not user:

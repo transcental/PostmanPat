@@ -1,5 +1,4 @@
 import logging
-import sys
 import traceback
 from typing import Any
 
@@ -49,19 +48,13 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
                     )
     except Exception as e:
         logging.error(f"Error opening app home: {e}")
-        ex_type, ex_value, ex_traceback = sys.exc_info()
-        # Extract unformatter stack traces as tuples
-        trace_back = traceback.extract_tb(ex_traceback)
+        tb = traceback.format_exception(e)
 
-        # Format stacktrace
-        stack_trace = ""
-
-        for trace in trace_back:
-            stack_trace += f"File: {trace[0]}\nLine: {trace[1]}\nFunction: {trace[2]}\nMessage: {trace[3]}\n"
+        tb_str = "".join(tb)
 
         view = get_error_view(
-            f"An error occurred while opening the app home: {ex_type.__name__}: {ex_value}",
-            traceback=stack_trace.strip(),
+            f"An error occurred while opening the app home: {e}",
+            traceback=tb_str,
         )
 
     await client.views_publish(user_id=user_id, view=view)

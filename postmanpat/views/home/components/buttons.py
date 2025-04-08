@@ -7,13 +7,13 @@ def get_buttons(postie: Postie, current: str = "dashboard"):
     buttons.append(
         {
             "type": "button",
-            "text": {"type": "plain_text", "text": "Dash", "emoji": True},
+            "text": {"type": "plain_text", "text": "Dashboard", "emoji": True},
             "action_id": "dashboard",
             **({"style": "primary"} if current != "dashboard" else {}),
         }
     )
 
-    if postie.fields.manager:
+    if postie.is_manager:
         buttons.append(
             {
                 "type": "button",

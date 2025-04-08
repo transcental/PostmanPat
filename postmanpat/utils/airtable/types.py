@@ -1,4 +1,6 @@
 from enum import Enum
+from typing import Literal
+from typing import Optional
 
 from pydantic import BaseModel
 from pydantic import ConfigDict
@@ -29,13 +31,43 @@ class PostieFields(BaseModel):
     usd_price_per_intl_letter: float
     post: list[str] = []
     autonumber: int
-    manager: bool = False
+    role: Literal["postie", "manager", "superadmin"] = "postie"
+    created_at: str
+    updated_at: str
+    invited_by: list[str]
 
 
 class Postie(BaseModel):
     model_config = ConfigDict(extra="allow")
     id: str
     fields: PostieFields
+
+    @property
+    def is_manager(self) -> bool:
+        return self.fields.role in ["manager", "superadmin"]
+
+    @property
+    def is_regular_manager(self) -> bool:
+        return self.fields.role == "manager"
+
+    @property
+    def is_superadmin(self) -> bool:
+        return self.fields.role == "superadmin"
+
+    @property
+    def is_working(self) -> bool:
+        return not self.fields.on_hiatus
+
+    @property
+    def inviter(self) -> Optional["Postie"]:
+        from postmanpat.utils.env import env
+
+        inviter = self.fields.invited_by
+        posties = env.airtable_client.get_posties_by_ids(inviter)
+        if posties:
+            return posties[0]
+        else:
+            return None
 
 
 class ShippingReqStatus(Enum):
@@ -70,7 +102,7 @@ class ShippingRequestFields(BaseModel):
     contents: list[str] = []
     skus: list[str] = []
     custom_instructions: str | None = None
-    postie: str | None = None
+    postie: list[str] | None = None
 
 
 class ShippingRequest(BaseModel):

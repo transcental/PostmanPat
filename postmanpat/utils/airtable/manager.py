@@ -47,12 +47,12 @@ class AirtableManager:
         view: str = "Everything",
         fields: list | None = None,
         formula: str | None = None,
-    ) -> list[ShippingRequest] | None:
+    ) -> list[ShippingRequest]:
         requests = self.requests_table.all(view=view, fields=fields, formula=formula)
         if requests:
             requests = [ShippingRequest.parse_obj(req) for req in requests]
         else:
-            requests = None
+            requests = []
         return requests
 
     def get_postie(self, postie_id: str, fields: list | None = None):

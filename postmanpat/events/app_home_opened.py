@@ -7,6 +7,7 @@ from slack_sdk.web.async_client import AsyncWebClient
 from postmanpat.utils.env import env
 from postmanpat.views.home.error import get_error_view
 from postmanpat.views.home.loading import get_loading_view
+from postmanpat.views.home.manage_mail import get_manage_mail_view
 from postmanpat.views.home.manage_posties import get_manage_posties_view
 from postmanpat.views.home.manager import get_manager_view
 from postmanpat.views.home.postie import get_postie_view
@@ -42,6 +43,8 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
                         view = get_postie_view(user)
                 case "manage-posties":
                     view = await get_manage_posties_view(user)
+                case "manage-mail":
+                    view = await get_manage_mail_view(user)
                 case _:
                     view = get_error_view(
                         f"This shouldn't happen, please tell amber that app home case _ was hit with type {type}"

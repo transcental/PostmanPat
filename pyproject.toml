@@ -6,11 +6,13 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "aiohttp>=3.11.14",
+    "astral>=3.2",
     "matplotlib>=3.10.1",
     "numpy>=2.2.4",
     "pyairtable>=3.0.2",
     "pydantic[email]>=2.11.1",
     "python-dotenv>=1.1.0",
+    "pytz>=2025.2",
     "slack-bolt>=1.23.0",
     "starlette>=0.46.1",
     "uvicorn>=0.34.0",

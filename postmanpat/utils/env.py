@@ -16,6 +16,7 @@ class Environment:
         self.slack_bot_token = os.environ.get("SLACK_BOT_TOKEN", "unset")
         self.slack_signing_secret = os.environ.get("SLACK_SIGNING_SECRET", "unset")
         self.slack_heartbeat_channel = os.environ.get("SLACK_HEARTBEAT_CHANNEL")
+        self.slack_maintainer_id = os.environ.get("SLACK_MAINTAINER_ID", "unset")
 
         self.airtable_api_key = os.environ.get("AIRTABLE_API_KEY", "unset")
         self.airtable_base_id = os.environ.get("AIRTABLE_BASE_ID", "unset")

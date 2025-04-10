@@ -5,6 +5,7 @@ from typing import Any
 from slack_sdk.web.async_client import AsyncWebClient
 
 from postmanpat.utils.env import env
+from postmanpat.utils.logging import send_heartbeat
 from postmanpat.views.home.error import get_error_view
 from postmanpat.views.home.loading import get_loading_view
 from postmanpat.views.home.manage_mail import get_manage_mail_view
@@ -46,6 +47,9 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
                 case "manage-mail":
                     view = await get_manage_mail_view(user)
                 case _:
+                    await send_heartbeat(
+                        f"Attempted to load unknown app home type {type} for {user_id}"
+                    )
                     view = get_error_view(
                         f"This shouldn't happen, please tell amber that app home case _ was hit with type {type}"
                     )
@@ -58,6 +62,10 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
         view = get_error_view(
             f"An error occurred while opening the app home: {e}",
             traceback=tb_str,
+        )
+        await send_heartbeat(
+            f"{e} opening app home for {user_id}",
+            messages=[tb_str, f"<@{env.slack_maintainer_id}>"],
         )
 
     await client.views_publish(user_id=user_id, view=view)

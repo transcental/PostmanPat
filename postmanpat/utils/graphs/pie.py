@@ -25,7 +25,8 @@ def generate_pie_chart(
         text.set_color(text_colour)
 
     for autotext in autotexts:
-        autotext.set_color(text_colour)
+        autotext.set_color("black")
+        autotext.set_fontsize(10)
 
     ax.axis("equal")
     fig.patch.set_facecolor(bg_colour)

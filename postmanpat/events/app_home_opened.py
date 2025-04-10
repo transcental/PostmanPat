@@ -48,7 +48,7 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
                     view = await get_manage_mail_view(user)
                 case _:
                     await send_heartbeat(
-                        f"Attempted to load unknown app home type {type} for {user_id}"
+                        f"Attempted to load unknown app home type {type} for <@{user_id}>"
                     )
                     view = get_error_view(
                         f"This shouldn't happen, please tell amber that app home case _ was hit with type {type}"
@@ -64,7 +64,7 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
             traceback=tb_str,
         )
         await send_heartbeat(
-            f"{e} opening app home for {user_id}",
+            f"{e} opening app home for <@{user_id}>",
             messages=[tb_str, f"<@{env.slack_maintainer_id}>"],
         )
 

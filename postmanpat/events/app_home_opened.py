@@ -51,7 +51,7 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
                         f"Attempted to load unknown app home type {type} for <@{user_id}>"
                     )
                     view = get_error_view(
-                        f"This shouldn't happen, please tell amber that app home case _ was hit with type {type}"
+                        f"This shouldn't happen, please tell <@{env.slack_maintainer_id}> that app home case `_` was hit with type `{type}`"
                     )
     except Exception as e:
         logging.error(f"Error opening app home: {e}")
@@ -64,8 +64,8 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
             traceback=tb_str,
         )
         await send_heartbeat(
-            f"{e} opening app home for <@{user_id}>",
-            messages=[tb_str, f"<@{env.slack_maintainer_id}>"],
+            f"`{e}` opening app home for <@{user_id}>",
+            messages=[f"```{tb_str}```", f"cc <@{env.slack_maintainer_id}>"],
         )
 
     await client.views_publish(user_id=user_id, view=view)

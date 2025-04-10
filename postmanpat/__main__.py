@@ -19,6 +19,10 @@ try:
 except ImportError:
     pass
 
+logging.basicConfig(
+    level="DEBUG" if env.environment != "production" else "INFO",
+)
+
 
 @contextlib.asynccontextmanager
 async def main(_app: Starlette):
@@ -37,10 +41,6 @@ async def main(_app: Starlette):
             await handler.connect_async()
 
         logging.info(f"Starting Uvicorn app on port {env.port}")
-
-        logging.basicConfig(
-            level="INFO" if env.environment != "production" else "WARNING"
-        )
 
         yield
 

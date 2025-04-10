@@ -12,7 +12,7 @@ load_dotenv(override=True)
 
 class Environment:
     def __init__(self):
-        self.slack_app_token = os.environ.get("SLACK_APP_TOKEN", "unset")
+        self.slack_app_token = os.environ.get("SLACK_APP_TOKEN")
         self.slack_bot_token = os.environ.get("SLACK_BOT_TOKEN", "unset")
         self.slack_signing_secret = os.environ.get("SLACK_SIGNING_SECRET", "unset")
         self.slack_heartbeat_channel = os.environ.get("SLACK_HEARTBEAT_CHANNEL")

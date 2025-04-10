@@ -109,3 +109,18 @@ class ShippingRequest(BaseModel):
     model_config = ConfigDict(extra="allow")
     id: str
     fields: ShippingRequestFields
+
+    @property
+    def is_sent(self) -> bool:
+        return self.fields.status in [
+            ShippingReqStatus.mailed,
+            ShippingReqStatus.arrived,
+        ]
+
+    @property
+    def has_arrived(self) -> bool:
+        return self.fields.status == ShippingReqStatus.arrived
+
+    @property
+    def postie(self) -> str | None:
+        return self.fields.postie[0] if self.fields.postie else None

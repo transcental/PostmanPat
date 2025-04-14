@@ -20,7 +20,7 @@ async def on_app_home_opened(event: dict[str, Any], client: AsyncWebClient):
     await open_app_home("default", client, user_id)
 
 
-async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
+async def open_app_home(home_type: str, client: AsyncWebClient, user_id: str):
     try:
         await client.views_publish(view=get_loading_view(), user_id=user_id)
 
@@ -35,8 +35,8 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
             )
             view = get_unknown_user_view(name)
         else:
-            logging.info(f"Opening {type} for {user_id}")
-            match type:
+            logging.info(f"Opening {home_type} for {user_id}")
+            match home_type:
                 case "default" | "dashboard":
                     if user.is_manager:
                         view = get_manager_view(user)
@@ -48,10 +48,10 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
                     view = await get_manage_mail_view(user)
                 case _:
                     await send_heartbeat(
-                        f"Attempted to load unknown app home type {type} for <@{user_id}>"
+                        f"Attempted to load unknown app home type {home_type} for <@{user_id}>"
                     )
                     view = get_error_view(
-                        f"This shouldn't happen, please tell <@{env.slack_maintainer_id}> that app home case `_` was hit with type `{type}`"
+                        f"This shouldn't happen, please tell <@{env.slack_maintainer_id}> that app home case `_` was hit with home type `{home_type}`"
                     )
     except Exception as e:
         logging.error(f"Error opening app home: {e}")
@@ -63,8 +63,9 @@ async def open_app_home(type: str, client: AsyncWebClient, user_id: str):
             f"An error occurred while opening the app home: {e}",
             traceback=tb_str,
         )
+        err_type = type(e).__name__
         await send_heartbeat(
-            f"`{e}` opening app home for <@{user_id}>",
+            f"`{err_type}` opening app home for <@{user_id}>",
             messages=[f"```{tb_str}```", f"cc <@{env.slack_maintainer_id}>"],
         )
 

@@ -1,5 +1,3 @@
-import logging
-
 from pyairtable import Api
 
 from postmanpat.utils.airtable.types import Postie
@@ -69,6 +67,18 @@ class AirtableManager:
             postie = Postie.parse_obj(postie)
         return postie
 
+    def update_postie_by_id(self, postie_id: str, fields: dict):
+        postie = self.posties_table.update(postie_id, fields=fields)
+        if postie:
+            postie = Postie.parse_obj(postie)
+        return postie
+
+    def create_postie(self, fields: dict):
+        postie = self.posties_table.create(fields)
+        if postie:
+            postie = Postie.parse_obj(postie)
+        return postie
+
     def get_request(self, request_id: str, fields: list | None = None):
         request = self.requests_table.get(request_id, fields=fields)
         return request
@@ -76,7 +86,6 @@ class AirtableManager:
     def get_requests_by_postie_id(
         self, postie_id: str, fields: list | None = None
     ) -> list[ShippingRequest]:
-        logging.info(f"Finding requests for {postie_id}")
         requests = self.requests_table.all(
             formula=f"{{postie}} = '{postie_id}'", fields=fields
         )

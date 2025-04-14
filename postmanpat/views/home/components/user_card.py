@@ -8,7 +8,6 @@ from postmanpat.utils.env import env
 async def get_user_card(postie: Postie, viewer: Postie):
     sentence = f"{':desert_island:' if not postie.is_working else ''} {':zap:' if postie.is_superadmin else ''} <@{postie.fields.slack_id}>"
     reqs = env.airtable_client.get_requests_by_postie_id(postie.fields.identifier)
-    # logging.info(reqs)
 
     pending = 0
     shipped = 0

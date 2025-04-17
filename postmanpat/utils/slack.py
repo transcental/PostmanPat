@@ -1,18 +1,18 @@
-import time
-
 from slack_bolt.async_app import AsyncApp
 from slack_bolt.context.ack.async_ack import AsyncAck
 from slack_sdk.web.async_client import AsyncWebClient
 
+from postmanpat.actions.accept_invite import (
+    accept_invite_callback as accept_invite_action_callback,
+)
 from postmanpat.actions.open_view import open_view
 from postmanpat.events.app_home_opened import on_app_home_opened
 from postmanpat.events.app_home_opened import open_app_home
 from postmanpat.options.country import country_options
 from postmanpat.options.currency import currency_options
 from postmanpat.utils.env import env
-from postmanpat.views.modals.manager.accept_invite import get_accept_invite_view
 from postmanpat.views.modals.manager.callback.accept_invite import (
-    accept_invite_callback,
+    accept_invite_callback as accept_invite_view_callback,
 )
 from postmanpat.views.modals.superadmin.callback.invite_manager import check_user
 from postmanpat.views.modals.superadmin.callback.invite_manager import (
@@ -79,25 +79,9 @@ async def currency_select(payload: dict, ack: AsyncAck):
 
 @app.action("accept-manager")
 async def accept_invite(ack: AsyncAck, body, client: AsyncWebClient):
-    await ack()
-    user_id = body["user"]["id"]
-    action_id = body["actions"][0]["action_id"]
-    trigger_id = body["trigger_id"]
-    value = body["actions"][0]["value"]
-    inviter = value.split("-")[0]
-    sent = value.split("-")[1]
-    now = int(time.time())
-    if now - int(float(sent)) > 604800:
-        return await client.chat_postMessage(
-            text="heya!\nsorry mate, but this invite has expired! please ask your manager to send you a new one!\n\ncheerio - pat :)",
-            channel=user_id,
-        )
-
-    metadata = f"{inviter}-{action_id.split('-')[1]}"
-    view = get_accept_invite_view(user_id, metadata)
-    await client.views_open(trigger_id=trigger_id, view=view)
+    await accept_invite_action_callback(ack, body, client)
 
 
 @app.view("accept-invite")
 async def complete_invite_form(ack: AsyncAck, body, client: AsyncWebClient):
-    await accept_invite_callback(ack, body, client)
+    await accept_invite_view_callback(ack, body, client)

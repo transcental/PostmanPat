@@ -28,9 +28,7 @@ async def accept_invite_callback(ack: AsyncAck, body, client: AsyncWebClient):
     ]["value"]
     currency = values["currency"]["currency"]["selected_option"]["value"]
     private_metadata = view["private_metadata"]
-    inviter = private_metadata.split("-")[0]
-
-    role = private_metadata.split("-")[1]
+    inviter, role, invite_msg_ts = private_metadata.split("-")
 
     inviter_postie = env.airtable_client.get_postie_by_slack_id(inviter)
 
@@ -59,11 +57,49 @@ async def accept_invite_callback(ack: AsyncAck, body, client: AsyncWebClient):
     postie = env.airtable_client.create_postie(fields)
 
     if postie:
-        await client.chat_postMessage(
+        conf_msg = await client.chat_postMessage(
             channel=user_id,
             text=f"hey! welcome to the mail team! <@{inviter}> invited you to join as a {role}, you should speak to them for more information about what you need to do.\n\nhave a good one - pat :)",
         )
         await client.chat_postMessage(
             channel=inviter,
             text=f"hey! <@{user_id}> has accepted your invite to join the mail team as a {role}!\n\ncheerio - pat :)",
+        )
+
+        dm_id = conf_msg.get("channel", user_id)
+
+        # delete buttons from original invite message
+        msg = await client.conversations_history(
+            channel=dm_id,
+            latest=invite_msg_ts,
+            limit=1,
+            inclusive=True,
+            oldest=invite_msg_ts,
+        )
+        if msg:
+            blocks = msg.get("messages", [])[0]["blocks"]
+            for block in blocks:
+                if block.get("type") == "actions":
+                    blocks.remove(block)
+                    break
+            blocks.append(
+                {
+                    "type": "context",
+                    "elements": [
+                        {
+                            "type": "mrkdwn",
+                            "text": "_you have accepted the invite!_",
+                        }
+                    ],
+                }
+            )
+            await client.chat_update(
+                channel=dm_id,
+                ts=invite_msg_ts,
+                blocks=blocks,
+            )
+    else:
+        await client.chat_postMessage(
+            channel=user_id,
+            text=f"heya! got a message for you\n\nlooks like something went wrong when trying to accept your invite, please ask <@{env.slack_maintainer_id}> for help.\nthat doesn't look good - good luck!\n\ncheerio - pat :)",
         )

@@ -62,7 +62,7 @@ async def invite_manager_confirmation_callback(
     now = time.time()
     await client.chat_postMessage(
         channel=selected_user,
-        text="heya! You've been invited to join the mail team as a *manager*! woah!\n\nplease check out the message below and accept or reject the invite!",
+        text="heya! You've been invited to join the mail team as a *manager*! woah!\n\nplease check out the message below and accept the invite!",
         blocks=[
             {
                 "type": "section",
@@ -80,13 +80,6 @@ async def invite_manager_confirmation_callback(
                         "value": f"{user_id}-{now}",
                         "action_id": "accept-manager",
                         "style": "primary",
-                    },
-                    {
-                        "type": "button",
-                        "text": {"type": "plain_text", "text": "reject", "emoji": True},
-                        "value": f"{user_id}-{now}",
-                        "action_id": "reject-manager",
-                        "style": "danger",
                     },
                 ],
             },

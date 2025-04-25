@@ -7,6 +7,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv
 from starlette.applications import Starlette
 
+from postmanpat.tasks.update_rates import update_rates_loop
 from postmanpat.utils.env import env
 from postmanpat.utils.logging import send_heartbeat
 
@@ -40,6 +41,7 @@ async def main(_app: Starlette):
             logging.info("Starting Socket Mode handler")
             await handler.connect_async()
 
+            await asyncio.create_task(update_rates_loop())
         logging.info(f"Starting Uvicorn app on port {env.port}")
 
         yield

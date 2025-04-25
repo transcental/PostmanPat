@@ -73,6 +73,9 @@ class AirtableManager:
             postie = Postie.parse_obj(postie)
         return postie
 
+    def update_posties(self, updates: list):
+        self.posties_table.batch_update(updates)
+
     def create_postie(self, fields: dict):
         postie = self.posties_table.create(fields)
         if postie:

@@ -7,7 +7,7 @@ from postmanpat.utils.env import env
 from postmanpat.utils.logging import send_heartbeat
 from postmanpat.views.modals.error import get_error_view
 from postmanpat.views.modals.loading import get_loading_view
-from postmanpat.views.modals.superadmin.invite_manager import get_invite_manager_view
+from postmanpat.views.modals.manager.invite_user import get_invite_view
 from postmanpat.views.modals.unauthorised import get_unauthorised_view
 
 
@@ -49,8 +49,9 @@ async def open_view(
                 view = get_unauthorised_view(name)
 
             match view_type:
-                case "superadmin-invite-manager":
-                    view = get_invite_manager_view()
+                case "superadmin-invite-manager" | "admin-invite-postie":
+                    role = "Postie" if view_type == "admin-invite-postie" else "Manager"
+                    view = get_invite_view(role)
                 case _:
                     await send_heartbeat(
                         f"Attempted to load unknown modal type `{view_type}` for <@{user_id}>"

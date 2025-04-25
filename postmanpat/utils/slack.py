@@ -14,7 +14,18 @@ from postmanpat.utils.env import env
 from postmanpat.views.modals.manager.callback.accept_invite import (
     accept_invite_callback as accept_invite_view_callback,
 )
-from postmanpat.views.modals.superadmin.callback.invite_manager import check_user
+from postmanpat.views.modals.manager.callback.invite_postie import (
+    check_user as check_user_postie,
+)
+from postmanpat.views.modals.manager.callback.invite_postie import (
+    invite_postie_callback,
+)
+from postmanpat.views.modals.manager.callback.invite_postie_confirmation import (
+    invite_postie_confirmation_callback,
+)
+from postmanpat.views.modals.superadmin.callback.invite_manager import (
+    check_user as check_user_manager,
+)
 from postmanpat.views.modals.superadmin.callback.invite_manager import (
     invite_manager_callback,
 )
@@ -43,6 +54,7 @@ async def manage_home_switcher(ack: AsyncAck, body, client: AsyncWebClient):
 
 
 @app.action("superadmin-invite-manager")
+@app.action("admin-invite-postie")
 async def manage_modal_opener(ack: AsyncAck, body, client: AsyncWebClient):
     await ack()
     user_id = body["user"]["id"]
@@ -53,7 +65,12 @@ async def manage_modal_opener(ack: AsyncAck, body, client: AsyncWebClient):
 
 @app.action("invite-manager")
 async def invite_manager_action(ack: AsyncAck, body, client: AsyncWebClient):
-    await check_user(ack, body, client)
+    await check_user_manager(ack, body, client)
+
+
+@app.action("invite-postie")
+async def invite_postie_action(ack: AsyncAck, body, client: AsyncWebClient):
+    await check_user_postie(ack, body, client)
 
 
 @app.view("invite-manager")
@@ -61,10 +78,21 @@ async def invite_manager(ack: AsyncAck, body, client: AsyncWebClient):
     await invite_manager_callback(ack, body, client)
 
 
+@app.view("invite-postie")
+async def invite_postie(ack: AsyncAck, body, client: AsyncWebClient):
+    await invite_postie_callback(ack, body, client)
+
+
 @app.view("invite-manager-confirmation")
 async def invite_manager_confirmation(ack: AsyncAck, body, client: AsyncWebClient):
     await ack()
     await invite_manager_confirmation_callback(ack, body, client)
+
+
+@app.view("invite-postie-confirmation")
+async def invite_postie_confirmation(ack: AsyncAck, body, client: AsyncWebClient):
+    await ack()
+    await invite_postie_confirmation_callback(ack, body, client)
 
 
 @app.options("country")
@@ -78,6 +106,7 @@ async def currency_select(payload: dict, ack: AsyncAck):
 
 
 @app.action("accept-manager")
+@app.action("accept-postie")
 async def accept_invite(ack: AsyncAck, body, client: AsyncWebClient):
     await accept_invite_action_callback(ack, body, client)
 

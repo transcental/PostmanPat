@@ -1,11 +1,12 @@
 from typing import Any
+from typing import Literal
 
 
-def get_invite_manager_view() -> dict[str, Any]:
+def get_invite_view(role: Literal["Manager", "Postie"]) -> dict[str, Any]:
     return {
         "type": "modal",
-        "callback_id": "invite-manager",
-        "title": {"type": "plain_text", "text": "Invite as Manager"},
+        "callback_id": f"invite-{role.lower()}",
+        "title": {"type": "plain_text", "text": f"Invite as {role}"},
         "submit": {"type": "plain_text", "text": "Invite"},
         "close": {"type": "plain_text", "text": "Cancel"},
         "blocks": [
@@ -15,7 +16,7 @@ def get_invite_manager_view() -> dict[str, Any]:
                 "dispatch_action": True,
                 "label": {
                     "type": "plain_text",
-                    "text": "Choose a user to invite as a manager",
+                    "text": f"Choose a user to invite as a {role.lower()}",
                     "emoji": True,
                 },
                 "element": {
@@ -26,7 +27,7 @@ def get_invite_manager_view() -> dict[str, Any]:
                         "emoji": True,
                     },
                     "focus_on_load": True,
-                    "action_id": "invite-manager",
+                    "action_id": f"invite-{role.lower()}",
                 },
             }
         ],
